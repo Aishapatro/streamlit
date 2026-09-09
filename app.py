@@ -1,17 +1,31 @@
-# 1.Import streamlit
 import streamlit as st
- 
-# 2.Add a title to your app
-st.title("My First Streamlit  App created by PRAKASH SENAPATI") 
+from ollama import Client
 
-# 3.Add some text
-st.write("Welcome! This app calculates the square of a number.") 
+# Create client instance
+client = Client(host="http://localhost:11434")
 
-# 4. Create an interactive slider
-st.header("Select a Number")
-number=st.slider("Pick a number",0,0,5)
+st.set_page_config(
+    page_title="Custom LLM model by Prakash Senapati - Ollama",
+    layout="centered"
+)
 
-# 5.Calculate and display the result
-st.subheader("Result")
-squared_number= number*number
-st.write(f"The square of **{number}** is **{squared_number}**.")
+st.title("Prakash Senapati - Ollama App")
+
+prompt = st.text_area("Enter your prompt:", height=200)
+
+if st.button("Generate Response"):
+    # ✅ Correct condition
+    if prompt.strip() == "deepseek-r1:1.5b":
+        st.warning("Please enter a prompt.")
+    else:
+        with st.spinner("Thinking..."):
+            response = client.chat(
+                model="deepseek-r1:1.5b",
+                messages=[
+                    {"role": "user", "content": prompt}
+                ]
+            )
+
+            st.success("Response Generated!")
+            st.write(response["message"]["content"])
+            
